@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#8B1538">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Miele Laundry Guide</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --burgundy: #8B1538;
+      --burgundy-dark: #6D1029;
+      --gold: #C9A962;
+      --surface: #FAFAFA;
+      --card: #FFFFFF;
+      --sunken: #F3F3F3;
+      --section-bg: #F7F7F7;
+      --text: #1A1A1A;
+      --text-muted: #6B6B6B;
+      --text-faint: #9A9A9A;
+      --border: #E8E8E8;
+      --success: #2D7D46;
+      --success-bg: #E8F5EC;
+      --warning: #B45309;
+      --warning-bg: #FEF3C7;
+      --error: #C41E3A;
+      --error-bg: #FEE2E7;
+      --radius: 14px;
+      --radius-lg: 20px;
+    }
+
+    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+
+    body {
+      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--surface);
+      color: var(--text);
+      min-height: 100dvh;
+      line-height: 1.5;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .app {
+      max-width: 440px;
+      margin: 0 auto;
+      padding: 16px;
+      min-height: 100dvh;
+    }
+
+    @media (min-width: 640px) { .app { padding: 32px 24px; } }
+
+    /* Section */
+    .section {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+    }
+
+    .section-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--burgundy);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 14px;
+    }
+
+    /* Row Selection */
+    .rows { display: flex; flex-direction: column; gap: 8px; }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      background: var(--section-bg);
+      border: 2px solid transparent;
+      border-radius: 50px;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    .row:hover { border-color: var(--burgundy); background: #FDF8F9; }
+    .row:active { transform: scale(0.99); }
+
+    .row.selected {
+      border-color: var(--burgundy);
+      background: linear-gradient(135deg, #FDF8F9, #FCF5F6);
+    }
+
+    .row-icon {
+      width: 22px;
+      height: 22px;
+      color: var(--text-faint);
+      flex-shrink: 0;
+    }
+
+    .row.selected .row-icon { color: var(--burgundy); }
+
+    .row-label { flex: 1; text-align: left; }
+
+    .row-check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .row.selected .row-check {
+      background: var(--burgundy);
+      border-color: var(--burgundy);
+    }
+
+    .row-check svg {
+      width: 12px;
+      height: 12px;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+    .row.selected .row-check svg { opacity: 1; }
+
+    /* Color Swatch */
+    .swatch {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .swatch-white { background: #FFF; box-shadow: inset 0 0 0 2px var(--border); }
+    .swatch-light { background: linear-gradient(135deg, #F5E6D3, #FDF5E6); }
+    .swatch-bright { background: linear-gradient(135deg, #3B82F6, #EC4899 50%, #F59E0B); }
+    .swatch-dark { background: linear-gradient(135deg, #1F2937, #374151); }
+    .swatch-mixed { background: conic-gradient(#FFF 0deg, #F5E6D3 90deg, #3B82F6 180deg, #1F2937 270deg); box-shadow: inset 0 0 0 1px var(--border); }
+
+    /* Soil Icons */
+    .soil-icon {
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-faint);
+    }
+
+    .row.selected .soil-icon { color: var(--burgundy); }
+
+    .soil-icon svg { width: 20px; height: 20px; }
+
+    /* Button */
+    .btn-get {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 18px 24px;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      background: linear-gradient(135deg, var(--burgundy), var(--burgundy-dark));
+      color: white;
+      box-shadow: 0 4px 14px rgba(139, 21, 56, 0.35);
+      margin-bottom: 14px;
+    }
+
+    .btn-get:hover { box-shadow: 0 6px 20px rgba(139, 21, 56, 0.45); }
+    .btn-get:active { transform: scale(0.98); }
+
+    .btn-get:disabled {
+      background: var(--border);
+      color: var(--text-faint);
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-get svg { width: 18px; height: 18px; }
+
+    .btn-reset {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+      background: var(--sunken);
+      color: var(--text-muted);
+      transition: all 0.15s ease;
+    }
+
+    .btn-reset:hover { background: var(--border); color: var(--text); }
+    .btn-reset:active { transform: scale(0.98); }
+    .btn-reset svg { width: 16px; height: 16px; }
+
+    /* Results */
+    .results {
+      background: var(--card);
+      border-radius: var(--radius-lg);
+      padding: 24px 20px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .results-icon {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 16px;
+      background: var(--success-bg);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .results-icon svg { width: 32px; height: 32px; color: var(--success); }
+
+    .results-title {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    /* Warning */
+    .warning {
+      background: var(--warning-bg);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 14px;
+    }
+
+    .warning-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--warning);
+      font-size: 0.875rem;
+      margin-bottom: 8px;
+    }
+
+    .warning-title svg { width: 18px; height: 18px; }
+
+    .warning ul { list-style: none; font-size: 0.8125rem; color: #92400E; }
+    .warning li { padding: 3px 0 3px 16px; position: relative; }
+    .warning li::before { content: "•"; position: absolute; left: 4px; color: var(--warning); }
+
+    /* Program Card */
+    .program {
+      background: linear-gradient(135deg, var(--burgundy), var(--burgundy-dark));
+      border-radius: var(--radius);
+      padding: 20px;
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .program-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+
+    .program-header svg { width: 20px; height: 20px; }
+    .program-header span { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .program-name { font-size: 1.375rem; font-weight: 700; margin-bottom: 4px; }
+    .program-desc { font-size: 0.8125rem; opacity: 0.85; margin-bottom: 16px; line-height: 1.5; }
+
+    .program-specs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+    .spec {
+      background: rgba(255,255,255,0.15);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+
+    .spec-label { font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; margin-bottom: 2px; }
+    .spec-value { font-size: 0.875rem; font-weight: 600; }
+
+    /* Dryer Card */
+    .dryer-result {
+      background: var(--section-bg);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .dryer-result .program-header { color: var(--text-muted); }
+    .dryer-result .program-name { color: var(--text); font-size: 1.125rem; }
+    .dryer-result .program-desc { color: var(--text-muted); opacity: 1; font-size: 0.8125rem; }
+    .dryer-result .program-specs { grid-template-columns: repeat(2, 1fr); }
+    .dryer-result .spec { background: white; }
+    .dryer-result .spec-label { color: var(--text-faint); opacity: 1; }
+    .dryer-result .spec-value { color: var(--text); }
+
+    /* Air Dry */
+    .air-dry {
+      background: #E0F2FE;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+
+    .air-dry-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #0369A1;
+      margin-bottom: 8px;
+    }
+
+    .air-dry-header svg { width: 18px; height: 18px; }
+    .air-dry-header span { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .air-dry p { font-size: 0.8125rem; color: #0369A1; line-height: 1.5; }
+
+    /* Detergent */
+    .detergent {
+      background: var(--section-bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .detergent-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      font-size: 0.8125rem;
+      margin-bottom: 6px;
+    }
+
+    .detergent-title svg { width: 16px; height: 16px; color: var(--text-muted); }
+    .detergent p { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* Avoid */
+    .avoid {
+      background: var(--error-bg);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .avoid-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--error);
+      font-size: 0.8125rem;
+      margin-bottom: 4px;
+    }
+
+    .avoid-title svg { width: 16px; height: 16px; }
+    .avoid p { font-size: 0.8125rem; color: #991B1B; line-height: 1.5; }
+
+    /* Tips */
+    .tips {
+      background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+
+    .tips-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      color: var(--warning);
+      font-size: 0.875rem;
+      margin-bottom: 12px;
+    }
+
+    .tips-title svg { width: 18px; height: 18px; color: var(--gold); }
+
+    .tips ul { list-style: none; }
+
+    .tips li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 0.8125rem;
+      color: #78350F;
+      line-height: 1.4;
+      border-bottom: 1px solid rgba(201, 169, 98, 0.25);
+    }
+
+    .tips li:last-child { border-bottom: none; padding-bottom: 0; }
+    .tips li svg { width: 14px; height: 14px; color: var(--gold); flex-shrink: 0; margin-top: 2px; }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { animation: fadeIn 0.25s ease-out; }
+
+    /* Hidden */
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="app" id="app"></div>
+
+  <script>
+    // Icons
+    const I = {
+      tshirt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/></svg>',
+      shirt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/><path d="M12 2v6"/></svg>',
+      pants: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v4l-2 14h-4l-2-10-2 10H6L4 8V4z"/></svg>',
+      underwear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16v4c0 4-2 8-4 10h-8c-2-2-4-6-4-10V6z"/><path d="M12 6v14"/></svg>',
+      towel: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>',
+      bed: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 9V5a2 2 0 012-2h16a2 2 0 012 2v4"/><path d="M2 11v6a2 2 0 002 2h16a2 2 0 002-2v-6"/><path d="M2 11h20"/></svg>',
+      activewear: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="3"/><path d="M12 8v8"/><path d="M8 12l-4 6"/><path d="M16 12l4 6"/></svg>',
+      heart: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',
+      sweater: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/><path d="M4 13h16"/></svg>',
+      jacket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 2l4 4v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6l4-4"/><path d="M12 2v6"/><path d="M4 6h16"/></svg>',
+      jeans: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v4l-2 14h-4l-2-8-2 8H6L4 8V4z"/><path d="M8 4v4"/><path d="M16 4v4"/></svg>',
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>',
+      warn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>',
+      bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 019 14"/></svg>',
+      refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',
+      washer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M7 6h.01"/><path d="M12 6h2"/></svg>',
+      dryer: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M9 13c1-1 3-1 4 0s3 1 4 0"/></svg>',
+      wind: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.7 7.7a2.5 2.5 0 111.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1111 8H2"/><path d="M12.6 19.4A2 2 0 1014 16H2"/></svg>',
+      star: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/></svg>',
+      ban: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>',
+      beaker: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 3h15"/><path d="M6 3v16a2 2 0 002 2h8a2 2 0 002-2V3"/><path d="M6 14h12"/></svg>',
+      soilLight: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1.5"/></svg>',
+      soilNormal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="1.5"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg>',
+      soilHeavy: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="6" r="1.5"/><circle cx="7" cy="11" r="1.5"/><circle cx="17" cy="11" r="1.5"/><circle cx="9" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg>'
+    };
+
+    // Data
+    const GARMENTS = [
+      { id: 'tshirts', label: 'T-Shirts & Tops', icon: 'tshirt', fabric: 'cotton' },
+      { id: 'shirts', label: 'Dress Shirts', icon: 'shirt', fabric: 'blend' },
+      { id: 'pants', label: 'Trousers', icon: 'pants', fabric: 'blend' },
+      { id: 'jeans', label: 'Jeans & Denim', icon: 'jeans', fabric: 'denim' },
+      { id: 'underwear', label: 'Underwear & Socks', icon: 'underwear', fabric: 'cotton' },
+      { id: 'towels', label: 'Towels', icon: 'towel', fabric: 'cotton' },
+      { id: 'bedding', label: 'Bed Linen', icon: 'bed', fabric: 'cotton' },
+      { id: 'activewear', label: 'Sportswear', icon: 'activewear', fabric: 'synthetic' },
+      { id: 'delicates', label: 'Delicates', icon: 'heart', fabric: 'delicate' },
+      { id: 'knitwear', label: 'Knitwear', icon: 'sweater', fabric: 'wool' },
+      { id: 'jackets', label: 'Jackets', icon: 'jacket', fabric: 'outdoor' }
+    ];
+
+    const COLORS = [
+      { id: 'white', label: 'White', swatch: 'white' },
+      { id: 'light', label: 'Light Colours', swatch: 'light' },
+      { id: 'bright', label: 'Bright Colours', swatch: 'bright' },
+      { id: 'dark', label: 'Dark Colours', swatch: 'dark' },
+      { id: 'mixed', label: 'Mixed Colours', swatch: 'mixed' }
+    ];
+
+    const SOILS = [
+      { id: 0, label: 'Lightly Soiled', icon: 'soilLight' },
+      { id: 1, label: 'Normal', icon: 'soilNormal' },
+      { id: 2, label: 'Heavily Soiled', icon: 'soilHeavy' }
+    ];
+
+    // Miele programs
+    const WASH = {
+      'Cottons Pro': { temp: '40-60°C', spin: '1400 rpm', load: '9.0 kg', desc: 'Everyday cotton items. Adjusts to soil level.' },
+      'Whites (90)': { temp: '90°C', spin: '1400 rpm', load: '9.0 kg', desc: 'Maximum hygiene for heavily soiled whites.' },
+      'Whites (75)': { temp: '75°C', spin: '1400 rpm', load: '9.0 kg', desc: 'Hygienic wash for whites and light colours.' },
+      'Colored Items (60)': { temp: '60°C', spin: '1400 rpm', load: '9.0 kg', desc: 'Coloured cottons at higher temperature.' },
+      'Colored Items (20)': { temp: '20°C', spin: '1200 rpm', load: '9.0 kg', desc: 'Energy-saving for lightly soiled colours.' },
+      'Minimum Iron (40)': { temp: '40°C', spin: '900 rpm', load: '4.0 kg', desc: 'Synthetics and blends. Reduces creasing.' },
+      'Delicates (30)': { temp: '30°C', spin: '600 rpm', load: '3.0 kg', desc: 'Gentle cycle for delicate fabrics.' },
+      'Dark Garments': { temp: '40°C', spin: '1000 rpm', load: '3.0 kg', desc: 'Protects dark colours. Higher water, 3 rinses, reduced spin.' },
+      'Denim': { temp: '40°C', spin: '800 rpm', load: '3.0 kg', desc: 'Gentle on denim, preserves colour and fit.' },
+      'Shirts': { temp: '40°C', spin: '600 rpm', load: '2.5 kg', desc: 'Gentle mechanics and low spin minimize creasing.' },
+      'Towels': { temp: '60°C', spin: '1400 rpm', load: '9.0 kg', desc: 'High temp for hygiene, thorough rinsing for absorbency.' },
+      'Express': { temp: '40°C', spin: '1200 rpm', load: '3.5 kg', desc: 'Quick 20-min wash for lightly soiled items only.' }
+    };
+
+    const DRY = {
+      'Cottons+ (Closet)': { level: 'Extra Dry', heat: 'Normal', desc: 'Thick towels, bathrobes. Ready to store.' },
+      'Cottons (Closet)': { level: 'Closet Dry', heat: 'Normal', desc: 'Everyday cotton. Ready to fold and store.' },
+      'Cottons (Iron)': { level: 'Iron Dry', heat: 'Normal', desc: 'Slightly damp, ideal for ironing.' },
+      'Cottons (Spin)': { level: 'Spin Dry', heat: 'Normal', desc: 'Very damp, for items to line dry after.' },
+      'Minimum Iron (Closet)': { level: 'Closet Dry', heat: 'Low', desc: 'Synthetics and blends. Limits wrinkles.' },
+      'Minimum Iron (Iron)': { level: 'Iron Dry', heat: 'Low', desc: 'Synthetics, slightly damp for ironing.' },
+      'Delicates (Closet)': { level: 'Gentle', heat: 'Low', desc: 'Delicate synthetics and lingerie.' },
+      'Shirts': { level: 'Closet Dry', heat: 'Medium', desc: 'Reduces creasing. Remove and hang immediately.' },
+      'Smoothing (Iron)': { level: 'Steam', heat: 'Medium', desc: 'Freshens and relaxes wrinkles with steam.' },
+      'Woolens': { level: 'Refresh', heat: 'Extra Low', desc: 'Fluff and freshen only. Air dry flat after.' },
+      'Express': { level: 'Quick', heat: 'Normal', desc: 'Fast dry for small loads.' },
+      'Timed Drying Warm Air (40)': { level: 'Timed', heat: 'Low', desc: 'Gentle warm air for delicate items with trims.' }
+    };
+
+    // State - default color to 'mixed'
+    let S = { items: [], color: 'mixed', soil: 1, showResults: false };
+
+    // Recommendation logic
+    function recommend() {
+      let { items, color, soil } = S;
+      let warn = [], tips = [], avoid = [], det = '', airTips = [];
+      let prog = 'Cottons Pro', dry = 'Cottons (Closet)';
+
+      // Fabric detection
+      let fabrics = items.map(id => GARMENTS.find(g => g.id === id)?.fabric).filter(Boolean);
+      let hasWool = fabrics.includes('wool');
+      let hasSynth = fabrics.includes('synthetic');
+      let hasDelicate = fabrics.includes('delicate');
+      let hasDenim = fabrics.includes('denim');
+      let hasOutdoor = fabrics.includes('outdoor');
+      let hasTowels = items.includes('towels');
+      let hasBedding = items.includes('bedding');
+      let hasShirts = items.includes('shirts');
+      let hasUnderwear = items.includes('underwear');
+      let hasTshirts = items.includes('tshirts');
+
+      let isDark = color === 'dark';
+      let isWhite = color === 'white';
+      let isMixed = color === 'mixed';
+      let isLight = soil === 0;
+      let isHeavy = soil === 2;
+
+      // Common mistakes warnings
+      if (isMixed) warn.push('New dark items can transfer dye. Wash separately first.');
+      if (hasDelicate && hasTowels) warn.push('Towel lint will stick to delicates. Wash separately.');
+      if (hasDenim && isWhite) warn.push('Denim can bleed onto whites. Wash separately.');
+      if (hasTowels && (hasSynth || hasDelicate)) warn.push('Heavy cottons can crush light synthetics in the dryer.');
+
+      // Program selection (priority order matters)
+      if (hasWool) {
+        prog = 'Delicates (30)';
+        dry = 'Woolens';
+        tips.push('Use wool detergent only (enzyme-free).');
+        tips.push('Turn inside out to prevent pilling.');
+        airTips.push('Reshape while damp, dry flat on a towel.');
+        det = 'Wool detergent (enzyme-free). Miele WoolCare recommended.';
+        avoid.push('Never use bio/enzyme detergent on wool');
+        avoid.push('Check care label before tumble drying');
+        if (hasTowels || hasBedding) warn.push('Wash wool separately from heavy items.');
+      } else if (hasDelicate) {
+        prog = 'Delicates (30)';
+        dry = 'Delicates (Closet)';
+        tips.push('Use a mesh laundry bag to protect items.');
+        tips.push('Check all zips, hooks and buttons are closed.');
+        airTips.push('Hang or lay flat to dry immediately.');
+        det = 'Mild liquid detergent. No bleach.';
+        avoid.push('Never tumble dry items with "no tumble dry" symbols');
+      } else if (hasDenim) {
+        prog = 'Denim';
+        dry = 'Minimum Iron (Closet)';
+        tips.push('Turn jeans inside out to preserve colour.');
+        tips.push('Wash with similar colours to prevent fading.');
+        airTips.push('Hang by waistband to maintain shape.');
+        det = 'Liquid detergent (no zeolites for dark denim).';
+        avoid.push('Avoid tumble drying to preserve fit and colour');
+      } else if (hasShirts && !hasTowels && !hasBedding) {
+        prog = 'Shirts';
+        dry = 'Shirts';
+        tips.push('Unbutton collars, cuffs and fronts.');
+        tips.push('Remove from dryer immediately to avoid wrinkles.');
+        airTips.push('Hang on hangers immediately while damp.');
+        det = 'Liquid detergent.';
+      } else if (hasOutdoor) {
+        prog = 'Minimum Iron (40)';
+        dry = 'Timed Drying Warm Air (40)';
+        tips.push('Close all zips and empty all pockets.');
+        tips.push('Turn items inside out to protect outer coatings.');
+        airTips.push('Hang to air dry fully.');
+        det = 'Technical wash detergent. No fabric softener.';
+        avoid.push('Never use fabric softener on outdoor gear');
+      } else if (hasSynth && !hasTowels) {
+        prog = 'Minimum Iron (40)';
+        dry = 'Minimum Iron (Closet)';
+        tips.push('Turn inside out to reduce pilling.');
+        tips.push('Wash sooner after gym use to prevent odours.');
+        airTips.push('Hang to dry. Avoid direct sunlight.');
+        det = 'Liquid detergent. No fabric softener.';
+        avoid.push('Fabric softener reduces moisture wicking');
+      } else if (hasTowels) {
+        prog = 'Towels';
+        dry = 'Cottons+ (Closet)';
+        tips.push('Shake well before drying for fluffiness.');
+        tips.push('Avoid detergent buildup by using correct dose.');
+        airTips.push('Hang in direct sunlight if possible.');
+        det = 'Powder detergent. No fabric softener.';
+        avoid.push('Never use fabric softener—reduces absorbency');
+      } else if (hasBedding) {
+        if (isWhite && isHeavy) {
+          prog = 'Whites (90)';
+        } else if (isWhite) {
+          prog = 'Whites (75)';
+        } else if (isHeavy) {
+          prog = 'Colored Items (60)';
+        } else {
+          prog = 'Cottons Pro';
+        }
+        dry = 'Cottons+ (Closet)';
+        tips.push('Wash sheets and duvet covers separately.');
+        airTips.push('Hang on line, shake occasionally while drying.');
+        det = isWhite ? 'Powder with bleaching agents.' : 'Liquid detergent for colours.';
+      } else if (hasUnderwear && items.length <= 2) {
+        prog = isWhite ? 'Whites (75)' : 'Colored Items (60)';
+        dry = 'Cottons (Closet)';
+        tips.push('60°C+ recommended for hygiene.');
+        airTips.push('Hang to dry on a rack or line.');
+        det = 'Bio/enzyme powder detergent.';
+      } else if (isDark) {
+        prog = 'Dark Garments';
+        dry = 'Minimum Iron (Closet)';
+        tips.push('Turn all items inside out before washing.');
+        tips.push('Uses higher water and 3 rinses to prevent residue.');
+        airTips.push('Dry in shade to prevent fading.');
+        det = 'Liquid detergent (no zeolites) to avoid white marks.';
+        avoid.push('Avoid overdrying—pulls can damage fabric');
+      } else if (isWhite) {
+        prog = isHeavy ? 'Whites (90)' : 'Whites (75)';
+        dry = 'Cottons (Closet)';
+        tips.push('Separate whites for maximum brightness.');
+        tips.push('Check items are truly white before washing hot.');
+        airTips.push('Sunlight naturally whitens and sanitizes.');
+        det = 'Powder with bleaching agents for best results.';
+      } else {
+        // General/mixed coloured items
+        if (isLight) {
+          prog = 'Express';
+          dry = 'Cottons (Closet)';
+          tips.push('Express is for lightly worn items only.');
+        } else if (isHeavy) {
+          prog = 'Colored Items (60)';
+          dry = 'Cottons+ (Closet)';
+        } else {
+          prog = 'Cottons Pro';
+          dry = 'Cottons (Closet)';
+        }
+        airTips.push('Shake items well before hanging.');
+        det = 'Liquid detergent for colours.';
+      }
+
+      // Soil-specific tips
+      if (isHeavy) {
+        tips.push('Pre-treat stains: apply detergent, wait 10-15 mins.');
+        avoid.push('Never tumble dry until stains are gone—heat sets stains');
+      }
+
+      if (isMixed) {
+        tips.push('Use colour-catcher sheets to prevent dye transfer.');
+      }
+
+      // Load size warning
+      if (items.length > 5) {
+        warn.push('Avoid overloading—reduces rinse quality and increases wrinkles.');
+      }
+
+      let w = WASH[prog];
+      let d = DRY[dry];
+      return {
+        wash: { prog, ...w },
+        dry: d ? { prog: dry, ...d } : null,
+        warn, tips: [...new Set(tips)].slice(0, 5), det, avoid: [...new Set(avoid)],
+        airTips: [...new Set(airTips)].slice(0, 2)
+      };
+    }
+
+    // Render
+    function render() {
+      let app = document.getElementById('app');
+      let canGetSettings = S.items.length > 0 && S.color !== null;
+      let h = '';
+
+      // Garments Section
+      h += '<div class="section">';
+      h += '<div class="section-title">What are you washing?</div>';
+      h += '<div class="rows">';
+      GARMENTS.forEach(g => {
+        let sel = S.items.includes(g.id);
+        h += '<button class="row' + (sel ? ' selected' : '') + '" onclick="toggle(\'' + g.id + '\')">';
+        h += '<span class="row-icon">' + I[g.icon] + '</span>';
+        h += '<span class="row-label">' + g.label + '</span>';
+        h += '<div class="row-check">' + I.check + '</div></button>';
+      });
+      h += '</div></div>';
+
+      // Colour Section
+      h += '<div class="section">';
+      h += '<div class="section-title">Colour</div>';
+      h += '<div class="rows">';
+      COLORS.forEach(col => {
+        let sel = S.color === col.id;
+        h += '<button class="row' + (sel ? ' selected' : '') + '" onclick="setColor(\'' + col.id + '\')">';
+        h += '<span class="swatch swatch-' + col.swatch + '"></span>';
+        h += '<span class="row-label">' + col.label + '</span>';
+        h += '<div class="row-check">' + I.check + '</div></button>';
+      });
+      h += '</div></div>';
+
+      // Soil Level Section
+      h += '<div class="section">';
+      h += '<div class="section-title">How dirty?</div>';
+      h += '<div class="rows">';
+      SOILS.forEach(s => {
+        let sel = S.soil === s.id;
+        h += '<button class="row' + (sel ? ' selected' : '') + '" onclick="setSoil(' + s.id + ')">';
+        h += '<span class="soil-icon">' + I[s.icon] + '</span>';
+        h += '<span class="row-label">' + s.label + '</span>';
+        h += '<div class="row-check">' + I.check + '</div></button>';
+      });
+      h += '</div></div>';
+
+      // Buttons
+      h += '<button class="btn-get" onclick="getSettings()"' + (canGetSettings ? '' : ' disabled') + '>Get Settings</button>';
+
+      // Reset button before results if not showing results
+      if (!S.showResults) {
+        h += '<button class="btn-reset" onclick="reset()">' + I.refresh + ' Start Over</button>';
+      }
+
+      // Results
+      if (S.showResults && canGetSettings) {
+        let r = recommend();
+        h += '<div class="results fade-in">';
+        h += '<div class="results-header"><div class="results-icon">' + I.check + '</div>';
+        h += '<h2 class="results-title">Your Settings</h2></div>';
+
+        if (r.warn.length) {
+          h += '<div class="warning"><div class="warning-title">' + I.warn + ' Important</div><ul>';
+          r.warn.forEach(w => h += '<li>' + w + '</li>');
+          h += '</ul></div>';
+        }
+
+        h += '<div class="program"><div class="program-header">' + I.washer + '<span>Washing Machine</span></div>';
+        h += '<div class="program-name">' + r.wash.prog + '</div>';
+        h += '<div class="program-desc">' + r.wash.desc + '</div>';
+        h += '<div class="program-specs">';
+        h += '<div class="spec"><div class="spec-label">Temp</div><div class="spec-value">' + r.wash.temp + '</div></div>';
+        h += '<div class="spec"><div class="spec-label">Spin</div><div class="spec-value">' + r.wash.spin + '</div></div>';
+        h += '<div class="spec"><div class="spec-label">Max Load</div><div class="spec-value">' + r.wash.load + '</div></div>';
+        h += '</div></div>';
+
+        if (r.dry) {
+          h += '<div class="dryer-result"><div class="program-header">' + I.dryer + '<span>If Using Dryer</span></div>';
+          h += '<div class="program-name">' + r.dry.prog + '</div>';
+          h += '<div class="program-desc">' + r.dry.desc + '</div>';
+          h += '<div class="program-specs">';
+          h += '<div class="spec"><div class="spec-label">Level</div><div class="spec-value">' + r.dry.level + '</div></div>';
+          h += '<div class="spec"><div class="spec-label">Heat</div><div class="spec-value">' + r.dry.heat + '</div></div>';
+          h += '</div></div>';
+        }
+
+        if (r.airTips.length) {
+          h += '<div class="air-dry"><div class="air-dry-header">' + I.wind + '<span>If Air Drying</span></div>';
+          h += '<p>' + r.airTips.join(' ') + '</p></div>';
+        }
+
+        if (r.det) {
+          h += '<div class="detergent"><div class="detergent-title">' + I.beaker + ' Detergent</div>';
+          h += '<p>' + r.det + '</p></div>';
+        }
+
+        if (r.avoid.length) {
+          h += '<div class="avoid"><div class="avoid-title">' + I.ban + ' Avoid</div>';
+          h += '<p>' + r.avoid.join('. ') + '.</p></div>';
+        }
+
+        if (r.tips.length) {
+          h += '<div class="tips"><div class="tips-title">' + I.bulb + ' Tips</div><ul>';
+          r.tips.forEach(t => h += '<li>' + I.star + '<span>' + t + '</span></li>');
+          h += '</ul></div>';
+        }
+
+        h += '</div>';
+
+        // Reset button after results
+        h += '<button class="btn-reset" onclick="reset()">' + I.refresh + ' Start Over</button>';
+      }
+
+      app.innerHTML = h;
+
+      // Scroll to results if showing
+      if (S.showResults) {
+        setTimeout(() => {
+          let results = document.querySelector('.results');
+          if (results) results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 50);
+      }
+    }
+
+    // Actions
+    function toggle(id) {
+      let i = S.items.indexOf(id);
+      if (i === -1) S.items.push(id); else S.items.splice(i, 1);
+      S.showResults = false;
+      render();
+    }
+    function setColor(id) {
+      S.color = S.color === id ? null : id;
+      S.showResults = false;
+      render();
+    }
+    function setSoil(v) {
+      S.soil = v;
+      S.showResults = false;
+      render();
+    }
+    function getSettings() {
+      S.showResults = true;
+      render();
+    }
+    function reset() {
+      S = { items: [], color: 'mixed', soil: 1, showResults: false };
+      render();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    render();
+  </script>
+</body>
+</html>

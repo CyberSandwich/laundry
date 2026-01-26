@@ -1,3 +1,8 @@
 .DS_Store
 .claude/
 CLAUDE.md
+
+# Test files (local development only)
+verify-logic.js
+comprehensive-content-test.js
+edge-case-tests.js

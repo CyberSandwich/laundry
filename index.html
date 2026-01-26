@@ -140,8 +140,6 @@ hU&&hSh&&!hW&&!hD&&warn.push('HYGIENE TRADE-OFF: Using Shirts program to protect
 hJ&&hSh&&warn.push('Using Shirts program (800rpm) to protect dress shirts from creasing. Denim may benefit from separate wash.');
 hJ&&hD&&warn.push('SEPARATE: Denim abrades delicates. Using Delicates program; wash denim separately.');
 (hJa||hP)&&hSh&&!hJ&&warn.push('Using Shirts program to protect dress shirts from heavy item creasing.');
-iM&&warn.push(hW||hK||hD?'Mixed colours can bleed even at 30C. Use colour-catcher sheets.':hSh||hO||hJa||hA||hJ?'Mixed colours can bleed at 40C. Use colour-catcher sheets.':(hT&&!hSh)||(hU&&t.length<=2&&!hSh)?'Mixed colours can bleed. Using 60C for hygiene; use colour-catcher sheets.':'Mixed colours: using 20C to minimize dye bleeding. Use colour-catcher sheets.');
-iB&&warn.push(hW||hK||hD?'Bright colours can bleed even at low temps. Use colour-catcher sheets.':hSh||hO||hJa||hA||hJ?'Bright colours can bleed at 40C. Use colour-catcher sheets.':(hT&&!hSh)||(hU&&t.length<=2&&!hSh)?'Bright colours can bleed. Using 60C for hygiene; use colour-catcher sheets.':'Bright colours bleed most at 40C. Using cold wash to preserve vibrancy.');
 hJ&&(iW||iL)&&warn.push('SEPARATE: Denim bleeds indigo for first 5-6 washes. Wash new denim alone.');
 iD&&!hJ&&warn.push('New dark items bleed dye for first 5-6 washes. Wash new darks separately or use colour-catchers.');
 t.length>5&&warn.push('Large load selected: ensure drum is max 3/4 full for proper agitation and rinsing.');
@@ -302,6 +300,9 @@ tips.push('Cottons Pro adjusts to soil level; efficient 59-minute cycle at 60C.'
 air.push('Shake well before hanging to release wrinkles and speed drying.');
 det=det||'Liquid bio detergent. CV4 water (moderately soft): 27ml standard dose.';
 }
+let tempC=parseInt(W[prog]?.t)||40;
+iM&&warn.push(tempC<=20?'Mixed colours: using 20C to minimize dye bleeding. Use colour-catcher sheets.':tempC<=30?'Mixed colours can bleed even at 30C. Use colour-catcher sheets.':tempC<=40?'Mixed colours can bleed at 40C. Use colour-catcher sheets.':'Mixed colours can bleed. Using '+tempC+'C for hygiene; use colour-catcher sheets.');
+iB&&warn.push(tempC<=20?'Bright colours: using 20C cold wash to preserve vibrancy. Use colour-catcher sheets.':tempC<=30?'Bright colours can bleed even at low temps. Use colour-catcher sheets.':tempC<=40?'Bright colours can bleed at 40C. Use colour-catcher sheets.':'Bright colours can bleed. Using '+tempC+'C for hygiene; use colour-catcher sheets.');
 if(sH){
 tips.unshift('Pre-treat stains: enzyme spray for protein (blood, sweat), dish soap for grease, oxygen bleach paste for tannins (coffee, wine).');
 tips.push('Heavy soil: increase detergent 50% (40ml liquid or 100ml powder for CV4 water).');

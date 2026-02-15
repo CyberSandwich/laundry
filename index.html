@@ -58,11 +58,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .wt,.ph,.ah,.dt,.at,.tt{display:flex;align-items:center;gap:8px;font-weight:600}
 .wt{color:var(--w);font-size:.875rem;margin-bottom:8px}
 .wt svg,.ah svg{width:18px;height:18px}
-.wa ul,.ti ul{list-style:none}
-.wa ul{font-size:.8125rem;color:#92400E}
-.wa li{padding:3px 0 3px 16px;position:relative}
-.wa li::before{content:"•";position:absolute;left:4px;color:var(--w)}
-.wa p{font-size:.8125rem;color:#92400E;line-height:1.4}
+.wa ul,.ti ul,.de ul,.av ul,.ad ul{list-style:none}
+.wa li,.de li,.av li,.ad li{padding:3px 0 3px 16px;position:relative;font-size:.8125rem;line-height:1.4}
+.wa li::before,.de li::before,.av li::before,.ad li::before{content:"•";position:absolute;left:4px}
+.wa p,.de p,.av p,.ad p{font-size:.8125rem;line-height:1.4}
+.wa li{color:#92400E}
+.wa li::before{color:var(--w)}
+.wa p{color:#92400E}
 .p{background:linear-gradient(135deg,var(--b),var(--bd));border-radius:var(--r);padding:20px;color:#fff;margin-bottom:12px}
 .ph{gap:10px;margin-bottom:12px;opacity:.9}
 .ph svg{width:20px;height:20px}
@@ -87,21 +89,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .to strong{font-weight:600}
 .ad{background:#E0F2FE;border-radius:var(--r);padding:16px;margin-bottom:12px}
 .ah{gap:10px;color:#0369A1;margin-bottom:8px}
-.ad p{font-size:.8125rem;color:#0369A1;line-height:1.5}
+.ad li,.ad li::before,.ad p{color:#0369A1}
 .de{background:var(--sb);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
 .dt{font-size:.8125rem;margin-bottom:8px}
 .dt svg,.at svg{width:16px;height:16px}
 .dt svg{color:var(--tm)}
-.de ul{list-style:none}
-.de li{padding:3px 0 3px 16px;position:relative;font-size:.8125rem;color:var(--tm);line-height:1.4}
-.de li::before{content:"•";position:absolute;left:4px;color:var(--tm)}
-.de p{font-size:.8125rem;color:var(--tm);line-height:1.4}
+.de li,.de li::before,.de p{color:var(--tm)}
 .av{background:var(--ebg);border-radius:var(--r);padding:14px 16px;margin-bottom:12px}
 .at{color:var(--e);font-size:.8125rem;margin-bottom:8px}
-.av ul{list-style:none}
-.av li{padding:3px 0 3px 16px;position:relative;font-size:.8125rem;color:#991B1B;line-height:1.4}
-.av li::before{content:"•";position:absolute;left:4px;color:var(--e)}
-.av p{font-size:.8125rem;color:#991B1B;line-height:1.4}
+.av li,.av p{color:#991B1B}
+.av li::before{color:var(--e)}
 .ti{background:linear-gradient(135deg,#FFFBEB,#FEF3C7);border-radius:var(--r);padding:16px;margin-bottom:12px}
 .tt{gap:10px;color:var(--w);font-size:.875rem;margin-bottom:12px}
 .tt svg{width:18px;height:18px;color:var(--g)}
@@ -114,9 +111,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 .ab{display:flex;gap:8px;padding:4px 0 0}
 .al{flex:1;display:flex;align-items:center;justify-content:center;padding:12px;border-radius:50px;background:var(--sb);border:2px solid var(--br);color:var(--tm);font-size:.8125rem;font-weight:600;text-decoration:none;transition:border-color .15s,background .15s}
 .al:hover{border-color:var(--tm)}
-.ad ul{list-style:none}
-.ad li{padding:3px 0 3px 16px;position:relative;font-size:.8125rem;color:#0369A1;line-height:1.4}
-.ad li::before{content:"•";position:absolute;left:4px;color:#0369A1}
 @keyframes f{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .fi{animation:f .25s ease-out}
 </style>
@@ -127,12 +121,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;b
 const $='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"',
 T='><path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.47a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.47a2 2 0 00-1.34-2.23z"/>',
 I={tshirt:$+' stroke-linecap="round" stroke-linejoin="round"'+T+'</svg>',shirt:$+T+'<path d="M12 2v6"/></svg>',pants:$+'><path d="M4 4h16v4l-2 14h-4l-2-10-2 10H6L4 8V4z"/></svg>',underwear:$+'><path d="M4 6h16v4c0 4-2 8-4 10h-8c-2-2-4-6-4-10V6z"/><path d="M12 6v14"/></svg>',towel:$+'><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 9h18"/></svg>',bed:$+'><path d="M2 9V5a2 2 0 012-2h16a2 2 0 012 2v4"/><path d="M2 11v6a2 2 0 002 2h16a2 2 0 002-2v-6"/><path d="M2 11h20"/></svg>',activewear:$+'><circle cx="12" cy="5" r="3"/><path d="M12 8v8M8 12l-4 6M16 12l4 6"/></svg>',heart:$+'><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>',sweater:$+T+'<path d="M4 13h16"/></svg>',jacket:$+'><path d="M16 2l4 4v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6l4-4M12 2v6M4 6h16"/></svg>',jeans:$+'><path d="M4 4h16v4l-2 14h-4l-2-8-2 8H6L4 8V4zM8 4v4M16 4v4"/></svg>',check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>',warn:$+'><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>',bulb:$+'><path d="M9 18h6M10 22h4M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0018 8 6 6 0 006 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 019 14"/></svg>',refresh:$+'><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>',washer:$+'><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M7 6h.01M12 6h2"/></svg>',dryer:$+'><rect x="3" y="2" width="18" height="20" rx="2"/><circle cx="12" cy="13" r="5"/><path d="M9 13c1-1 3-1 4 0s3 1 4 0"/></svg>',wind:$+'><path d="M17.7 7.7a2.5 2.5 0 111.8 4.3H2M9.6 4.6A2 2 0 1111 8H2M12.6 19.4A2 2 0 1014 16H2"/></svg>',star:$+'><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5L12 3z"/></svg>',ban:$+'><circle cx="12" cy="12" r="10"/><path d="M4.93 4.93l14.14 14.14"/></svg>',beaker:$+'><path d="M4.5 3h15M6 3v16a2 2 0 002 2h8a2 2 0 002-2V3M6 14h12"/></svg>',soilLight:$+'><circle cx="12" cy="12" r="1.5"/></svg>',soilNormal:$+'><circle cx="12" cy="8" r="1.5"/><circle cx="8" cy="14" r="1.5"/><circle cx="16" cy="14" r="1.5"/></svg>',soilHeavy:$+'><circle cx="12" cy="6" r="1.5"/><circle cx="7" cy="11" r="1.5"/><circle cx="17" cy="11" r="1.5"/><circle cx="9" cy="17" r="1.5"/><circle cx="15" cy="17" r="1.5"/></svg>',clock:$+'><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>',
-door:$+'><path d="M18 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V4a2 2 0 00-2-2z"/><circle cx="15" cy="12" r="1"/></svg>',
-wallet:$+'><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><circle cx="17" cy="15" r="1"/></svg>',
 phone:$+'><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>',
 users:$+'><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>',
-qmark:$+'><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>',
-arrowD:$+'><path d="M12 5v14M5 12l7 7 7-7"/></svg>'},
+qmark:$+'><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>'},
 G=[{id:'tshirts',l:'T-Shirts & Tops',i:'tshirt',f:'cotton'},{id:'shirts',l:'Dress Shirts',i:'shirt',f:'blend'},{id:'pants',l:'Trousers',i:'pants',f:'blend'},{id:'jeans',l:'Jeans & Denim',i:'jeans',f:'denim'},{id:'underwear',l:'Underwear & Socks',i:'underwear',f:'cotton'},{id:'towels',l:'Towels',i:'towel',f:'cotton'},{id:'bedding',l:'Bed Linen',i:'bed',f:'cotton'},{id:'activewear',l:'Sportswear',i:'activewear',f:'synthetic'},{id:'delicates',l:'Delicates',i:'heart',f:'delicate'},{id:'knitwear',l:'Knitwear',i:'sweater',f:'wool'},{id:'jackets',l:'Jackets',i:'jacket',f:'outdoor'}],
 K=[{id:'white',l:'White',w:'w'},{id:'light',l:'Light Colours',w:'l'},{id:'bright',l:'Bright Colours',w:'b'},{id:'dark',l:'Dark Colours',w:'d'},{id:'mixed',l:'Mixed Colours',w:'m'}],
 O=[{id:0,l:'Lightly Soiled',i:'soilLight'},{id:1,l:'Normal',i:'soilNormal'},{id:2,l:'Heavily Soiled',i:'soilHeavy'}],
@@ -369,15 +360,15 @@ h+='</div>'
 +'<div class="gl"><span class="gn">8</span><span class="gt">Unload when finished so others can use the machines</span></div>'
 +'</div>'
 +'<div class="de" style="margin:14px 0 0"><div class="dt">'+I.phone+' Get Airwallet</div>'
-+'<div class="ab"><a class="al" href="https://play.google.com/store/apps/details?id=com.companyname.Signup&hl=en_GB&pli=1" target="_blank">Google Play</a>'
-+'<a class="al" href="https://apps.apple.com/no/app/airwallet/id1382938805" target="_blank">App Store</a></div></div>'
-+'</div><div class="re fi">';
++'<div class="ab"><a class="al" href="https://play.google.com/store/apps/details?id=com.companyname.Signup&hl=en_GB&pli=1" target="_blank" rel="noopener">Google Play</a>'
++'<a class="al" href="https://apps.apple.com/no/app/airwallet/id1382938805" target="_blank" rel="noopener">App Store</a></div></div>'
++'</div><div class="s fi">';
 r.tips.length&&(h+='<div class="ti"><div class="tt">'+I.bulb+' Tips</div><ul>',r.tips.forEach(t=>h+='<li>'+I.star+'<span>'+t+'</span></li>'),h+='</ul></div>');
 r.avoid.length&&(h+='<div class="av"><div class="at">'+I.ban+' Avoid</div>'+(r.avoid.length===1?'<p>'+r.avoid[0]+'</p>':'<ul>'+r.avoid.map(a=>'<li>'+a+'</li>').join('')+'</ul>')+'</div>');
 r.air.length&&(h+='<div class="ad"><div class="ah">'+I.wind+'<span>If Air Drying</span></div><p>'+r.air.join(' ')+'</p></div>');
 r.det&&(h+='<div class="de"><div class="dt">'+I.beaker+' Detergent</div><p>'+r.det+'</p></div>');
 h+='</div>'
-+'<div class="re fi">'
++'<div class="s fi">'
 +'<div class="ad"><div class="ah">'+I.phone+'<span>Airwallet Features</span></div>'
 +'<ul><li>Check machine availability anytime</li><li>Book washing and drying machines remotely</li><li>Schedule sessions up to 2 weeks in advance</li></ul></div>'
 +'<div class="wa"><div class="wt">'+I.users+' Fair Usage</div>'

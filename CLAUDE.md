@@ -27,11 +27,11 @@ Three comprehensive test files validate all recommendation logic:
 
 | File | Tests | Purpose |
 |------|-------|---------|
-| `verify-logic.js` | 182 | Program selection, temperature, dryer, warnings |
+| `verify-logic.js` | 189 | Program selection, temperature, dryer, warnings |
 | `comprehensive-content-test.js` | 95 | Tips, detergent, avoid, air drying text |
 | `edge-case-tests.js` | 77 | Edge cases, priority order, regressions |
 
-**Total: 354 tests**
+**Total: 361 tests**
 
 ### Running Tests
 
@@ -50,7 +50,7 @@ node edge-case-tests.js                  # Edge cases and regressions
 **If you change `index.html`**, you MUST:
 
 1. **Update the `rec()` function in ALL test files** to match `index.html`
-2. **Run all 354 tests** to verify no regressions
+2. **Run all 361 tests** to verify no regressions
 3. **Add new test cases** if adding new logic paths
 
 ### Test File Structure
@@ -64,7 +64,7 @@ Each test file contains a **copy of the `rec()` function** from `index.html`. Wh
 
 ### What Each Test Suite Validates
 
-#### verify-logic.js (182 tests)
+#### verify-logic.js (189 tests)
 - **Single item matrix**: All 11 garments x 5 colors x 3 soil levels
 - **Priority order**: Wool > Delicates > Shirts > Denim > Outdoor > Activewear > Towels > Bedding > Underwear
 - **Conflict warnings**: All incompatible item combinations
@@ -149,7 +149,9 @@ Short identifiers for size optimization:
 | `.de` | detergent section | `.dt` | detergent title |
 | `.av` | avoid section | `.at` | avoid title |
 | `.ti` | tips section | `.tt` | tips title |
-| `.fi` | fade-in anim | | |
+| `.gl` | guide step line | `.gn` | guide number |
+| `.gt` | guide text | `.ab` | app buttons row |
+| `.al` | app link button | `.fi` | fade-in anim |
 
 ### JavaScript
 | Short | Purpose | Short | Purpose |
